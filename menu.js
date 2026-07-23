@@ -17,9 +17,33 @@
     });
 
     navigation.addEventListener("click", (event) => {
-      if (event.target instanceof Element && event.target.closest("a")) {
-        setOpen(false);
-      }
+      if (!(event.target instanceof Element)) return;
+
+      const link = event.target.closest("a");
+      const hash = link?.getAttribute("href");
+      if (!hash?.startsWith("#")) return;
+
+      const target = document.querySelector(hash);
+      if (!target) return;
+
+      event.preventDefault();
+      setOpen(false);
+
+      // Safari may calculate the anchor position before a fixed menu is hidden.
+      // Wait for the closed state to be painted, then move the document itself.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (window.location.hash !== hash) {
+            window.history.pushState(null, "", hash);
+          }
+          target.scrollIntoView({
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "auto"
+              : "smooth",
+            block: "start",
+          });
+        });
+      });
     });
 
     document.addEventListener("keydown", (event) => {
