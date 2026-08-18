@@ -1,4 +1,21 @@
 (() => {
+  const trackAnalyticsClick = (event) => {
+    if (!(event.target instanceof Element)) return;
+
+    const target = event.target.closest("[data-ga-event]");
+    if (!(target instanceof HTMLElement)) return;
+
+    const eventName = target.dataset.gaEvent;
+    if (!eventName || typeof window.gtag !== "function") return;
+
+    const params = {};
+    if (target.dataset.gaLocation) params.cta_location = target.dataset.gaLocation;
+    if (target.dataset.gaMethod) params.method = target.dataset.gaMethod;
+    if (target instanceof HTMLAnchorElement) params.link_url = target.href;
+
+    window.gtag("event", eventName, params);
+  };
+
   const initMobileMenu = () => {
     const button = document.querySelector(".menu");
     const navigation = document.getElementById("site-navigation");
@@ -15,6 +32,8 @@
     button.addEventListener("click", () => {
       setOpen(button.getAttribute("aria-expanded") !== "true");
     });
+
+    document.addEventListener("click", trackAnalyticsClick);
 
     // Handle every same-page link through one path. Leaving the header/footer
     // logos to Safari's native smooth anchor navigation can strand touch
