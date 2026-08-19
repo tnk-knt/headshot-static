@@ -11,6 +11,8 @@
     const params = {};
     if (target.dataset.gaLocation) params.cta_location = target.dataset.gaLocation;
     if (target.dataset.gaMethod) params.method = target.dataset.gaMethod;
+    if (target.dataset.gaService) params.service = target.dataset.gaService;
+    if (target.dataset.gaContent) params.content = target.dataset.gaContent;
     if (target instanceof HTMLAnchorElement) params.link_url = target.href;
 
     window.gtag("event", eventName, params);
