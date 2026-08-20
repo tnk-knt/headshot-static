@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://headshot.co.jp/</loc></url>
+  <url><loc>https://headshot.co.jp/</loc><lastmod>2026-08-20</lastmod></url>
   <url><loc>https://headshot.co.jp/services/it-advisory/</loc></url>
   <url><loc>https://headshot.co.jp/services/maintenance/</loc></url>
   <url><loc>https://headshot.co.jp/services/it-diagnosis/</loc></url>
   <url><loc>https://headshot.co.jp/services/development/</loc></url>
-  <url><loc>https://headshot.co.jp/insights/</loc></url>
-  <url><loc>https://headshot.co.jp/insights/no-it-staff-outsourcing/</loc></url>
-  <url><loc>https://headshot.co.jp/insights/it-advisory/</loc></url>
-  <url><loc>https://headshot.co.jp/insights/it-advisory-cost/</loc></url>
-  <url><loc>https://headshot.co.jp/insights/system-maintenance-cost/</loc></url>
-  <url><loc>https://headshot.co.jp/insights/system-development-estimate/</loc></url>
+  <url><loc>https://headshot.co.jp/insights/</loc><lastmod>2026-08-20</lastmod></url>
+  <url><loc>https://headshot.co.jp/insights/no-it-staff-outsourcing/</loc><lastmod>2026-08-20</lastmod></url>
+  <url><loc>https://headshot.co.jp/insights/it-advisory/</loc><lastmod>2026-08-20</lastmod></url>
+  <url><loc>https://headshot.co.jp/insights/it-advisory-cost/</loc><lastmod>2026-08-20</lastmod></url>
+  <url><loc>https://headshot.co.jp/insights/system-maintenance-cost/</loc><lastmod>2026-08-20</lastmod></url>
+  <url><loc>https://headshot.co.jp/insights/system-development-estimate/</loc><lastmod>2026-08-20</lastmod></url>
 </urlset>
