@@ -1,4 +1,20 @@
 (() => {
+  const SEARCH_INTENT_BY_PATH = {
+    "/insights/generative-ai-business-efficiency/": "generative_ai_business_efficiency",
+    "/insights/ai-system-development/": "ai_system_development",
+  };
+
+  const FUNNEL_STAGE_BY_EVENT = {
+    insight_view: "content",
+    insight_to_service: "service_consideration",
+    generate_lead: "lead",
+  };
+
+  const normalizePathname = (pathname) => {
+    if (!pathname || pathname === "/") return "/";
+    return pathname.endsWith("/") ? pathname : `${pathname}/`;
+  };
+
   const trackAnalyticsClick = (event) => {
     if (!(event.target instanceof Element)) return;
 
@@ -14,6 +30,12 @@
     if (target.dataset.gaService) params.service = target.dataset.gaService;
     if (target.dataset.gaContent) params.content = target.dataset.gaContent;
     if (target instanceof HTMLAnchorElement) params.link_url = target.href;
+
+    const pathname = normalizePathname(window.location.pathname);
+    const searchIntent = target.dataset.gaIntent || SEARCH_INTENT_BY_PATH[pathname];
+    const funnelStage = target.dataset.gaStage || FUNNEL_STAGE_BY_EVENT[eventName];
+    if (searchIntent) params.search_intent = searchIntent;
+    if (funnelStage) params.funnel_stage = funnelStage;
 
     window.gtag("event", eventName, params);
   };
