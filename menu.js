@@ -5,9 +5,16 @@
   };
 
   const FUNNEL_STAGE_BY_EVENT = {
+    insights_index_view: "content",
     insight_view: "content",
+    services_view: "service_discovery",
+    service_detail_view: "service_consideration",
     insight_to_service: "service_consideration",
+    growth_engine_cta: "diagnosis",
+    contact_intent: "lead_intent",
     generate_lead: "lead",
+    custom_order_interest: "product_interest",
+    custom_order_site_click: "product_consideration",
   };
 
   const normalizePathname = (pathname) => {
