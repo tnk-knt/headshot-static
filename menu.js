@@ -11,11 +11,17 @@
     service_detail_view: "service_consideration",
     insight_to_service: "service_consideration",
     growth_engine_cta: "diagnosis",
+    diagnosis_start: "activation_start",
+    diagnosis_complete: "activation",
+    diagnosis_to_lead: "lead_intent",
     contact_intent: "lead_intent",
     generate_lead: "lead",
     custom_order_interest: "product_interest",
     custom_order_site_click: "product_consideration",
   };
+
+  const ONCE_PER_PAGE_EVENTS = new Set(["diagnosis_start", "diagnosis_complete"]);
+  const sentOnceEvents = new Set();
 
   const normalizePathname = (pathname) => {
     if (!pathname || pathname === "/") return "/";
@@ -31,20 +37,36 @@
     const eventName = target.dataset.gaEvent;
     if (!eventName || typeof window.gtag !== "function") return;
 
-    const params = {};
-    if (target.dataset.gaLocation) params.cta_location = target.dataset.gaLocation;
-    if (target.dataset.gaMethod) params.method = target.dataset.gaMethod;
-    if (target.dataset.gaService) params.service = target.dataset.gaService;
-    if (target.dataset.gaContent) params.content = target.dataset.gaContent;
-    if (target instanceof HTMLAnchorElement) params.link_url = target.href;
+    const baseParams = {};
+    if (target.dataset.gaLocation) baseParams.cta_location = target.dataset.gaLocation;
+    if (target.dataset.gaMethod) baseParams.method = target.dataset.gaMethod;
+    if (target.dataset.gaService) baseParams.service = target.dataset.gaService;
+    if (target.dataset.gaContent) baseParams.content = target.dataset.gaContent;
+    if (target instanceof HTMLAnchorElement) baseParams.link_url = target.href;
 
     const pathname = normalizePathname(window.location.pathname);
     const searchIntent = target.dataset.gaIntent || SEARCH_INTENT_BY_PATH[pathname];
-    const funnelStage = target.dataset.gaStage || FUNNEL_STAGE_BY_EVENT[eventName];
-    if (searchIntent) params.search_intent = searchIntent;
-    if (funnelStage) params.funnel_stage = funnelStage;
+    if (searchIntent) baseParams.search_intent = searchIntent;
 
-    window.gtag("event", eventName, params);
+    const eventNames = [eventName, target.dataset.gaSecondaryEvent].filter(Boolean);
+    for (const currentEventName of eventNames) {
+      if (ONCE_PER_PAGE_EVENTS.has(currentEventName) && sentOnceEvents.has(currentEventName)) {
+        continue;
+      }
+
+      const params = { ...baseParams };
+      const funnelStage = target.dataset.gaStage || FUNNEL_STAGE_BY_EVENT[currentEventName];
+      if (funnelStage) params.funnel_stage = funnelStage;
+
+      window.gtag("event", currentEventName, params);
+      if (ONCE_PER_PAGE_EVENTS.has(currentEventName)) {
+        sentOnceEvents.add(currentEventName);
+      }
+    }
+  };
+
+  const initAnalytics = () => {
+    document.addEventListener("click", trackAnalyticsClick);
   };
 
   const initMobileMenu = () => {
@@ -63,8 +85,6 @@
     button.addEventListener("click", () => {
       setOpen(button.getAttribute("aria-expanded") !== "true");
     });
-
-    document.addEventListener("click", trackAnalyticsClick);
 
     // Handle every same-page link through one path. Leaving the header/footer
     // logos to Safari's native smooth anchor navigation can strand touch
@@ -127,9 +147,14 @@
     });
   };
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initMobileMenu, { once: true });
-  } else {
+  const initPage = () => {
+    initAnalytics();
     initMobileMenu();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initPage, { once: true });
+  } else {
+    initPage();
   }
 })();
